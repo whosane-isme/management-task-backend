@@ -25,7 +25,7 @@
 | 0 | [Foundation](docs/roadmaps/00-foundation.md) | مكتمل | — |
 | 1 | [Data Model](docs/roadmaps/01-data-model.md) | مكتمل ومتحقق على PostgreSQL 17 | Foundation |
 | 2 | [Users & Departments](docs/roadmaps/02-users-departments.md) | Services منفذة؛ API ينتظر Auth | Data Model |
-| 3 | [Authentication](docs/roadmaps/03-authentication.md) | Google مضبوط محليًا؛ اختبار callback النهائي معلّق | Users |
+| 3 | [Authentication](docs/roadmaps/03-authentication.md) | مكتمل ومتحقق end-to-end محليًا | Users |
 | 4 | [Tasks & Assignments](docs/roadmaps/04-tasks-assignments.md) | مخطط | Auth |
 | 5 | [Authorization](docs/roadmaps/05-authorization.md) | المحرك الأساسي منفذ | Tasks |
 | 6 | [Comments & Activity](docs/roadmaps/06-comments-activity.md) | مخطط | Authorization |
@@ -55,7 +55,8 @@
 - [x] Google Authorization Code Flow مع PKCE و`state` و`nonce` في الكود.
 - [x] ربط المستخدم المدعو بهوية Google ذات بريد موثّق في الكود.
 - [x] جلسات قابلة للإبطال وتسجيل خروج فعلي في الكود.
-- [ ] اختبار end-to-end مع Google credentials وPostgreSQL حقيقيين.
+- [x] اختبار end-to-end مع Google credentials وPostgreSQL حقيقيين.
+- [x] تنقية query strings من access logs لحماية OAuth authorization codes.
 
 ### M3 — المهام والصلاحيات
 

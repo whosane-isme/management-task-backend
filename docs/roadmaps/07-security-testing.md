@@ -10,6 +10,7 @@
 ## ضوابط مستمرة
 
 - أسرار من environment/secret manager فقط، و`.env` خارج Git.
+- حذف query strings من access logs حتى لا تظهر OAuth codes أو معاملات حساسة.
 - رسائل أخطاء لا تكشف stack أو DB؛ logs منظمة مع request ID ومن دون credentials.
 - CORS origins صريحة، Trusted Hosts، HTTPS/HSTS في production.
 - حدود payload وpagination وtimeouts وrate limits لمسارات حساسة.

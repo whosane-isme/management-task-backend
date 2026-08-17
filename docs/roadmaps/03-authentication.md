@@ -14,7 +14,8 @@ Google OIDC باستخدام Authorization Code Flow مع PKCE. Google يثبت 
 - [x] `/auth/me` وlogout مع إبطال سجل الجلسة.
 - [x] Google OAuth Client credentials مضبوطة محليًا من صاحب المشروع.
 - [x] تشغيل migrations على PostgreSQL حقيقي.
-- [ ] اختبار callback كامل بحساب Google بعد bootstrap لأول مدير.
+- [x] اختبار callback كامل بحساب Google بعد bootstrap لأول مدير.
+- [x] منع تسجيل query string لمسار callback في Uvicorn access logs.
 
 ## التدفق
 
