@@ -26,10 +26,11 @@
 
 ## التنفيذ
 
-- policy functions مركزية يعاد استخدامها في list/detail/write.
-- تطبيق filter على query نفسها، وليس جلب السجل ثم إخفاء الاستجابة فقط.
+- [x] policy functions مركزية يعاد استخدامها في list/detail/write.
+- [x] تطبيق filter على query نفسها، وليس جلب السجل ثم إخفاء الاستجابة فقط.
 - عدم تسريب وجود سجل سري؛ استخدم 404 عندما يلزم.
 - منع mass assignment: schemas منفصلة للإنشاء والتعديل والاستجابة.
-- اختبارات permission matrix parametrized لكل endpoint ولكل visibility.
-- deny by default، وجمع permissions من كل role assignment صالح ضمن نطاق المورد.
-- تفضيلات الإخفاء لا تدخل دالة authorization ولا يمكن استعمالها للوصول إلى مهمة.
+- [x] اختبارات policy matrix لكل visibility والنطاقات الأساسية.
+- [x] deny by default، وجمع permissions من كل role assignment صالح ضمن نطاق المورد.
+- [x] تفضيلات الإخفاء لا تدخل دالة authorization ولا يمكن استعمالها للوصول إلى مهمة.
+- [ ] اختبارات permission matrix على كل endpoint بعد إضافة routes.

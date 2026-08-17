@@ -24,10 +24,10 @@
 |---|---|---:|---|
 | 0 | [Foundation](docs/roadmaps/00-foundation.md) | مكتمل | — |
 | 1 | [Data Model](docs/roadmaps/01-data-model.md) | منفذ؛ تحقق PostgreSQL معلّق | Foundation |
-| 2 | [Users & Departments](docs/roadmaps/02-users-departments.md) | مخطط | Data Model |
+| 2 | [Users & Departments](docs/roadmaps/02-users-departments.md) | Services منفذة؛ API ينتظر Auth | Data Model |
 | 3 | [Authentication](docs/roadmaps/03-authentication.md) | مخطط | Users |
 | 4 | [Tasks & Assignments](docs/roadmaps/04-tasks-assignments.md) | مخطط | Auth |
-| 5 | [Authorization](docs/roadmaps/05-authorization.md) | مخطط | Tasks |
+| 5 | [Authorization](docs/roadmaps/05-authorization.md) | المحرك الأساسي منفذ | Tasks |
 | 6 | [Comments & Activity](docs/roadmaps/06-comments-activity.md) | مخطط | Authorization |
 | 7 | [Security & Testing](docs/roadmaps/07-security-testing.md) | مستمر | كل مرحلة |
 | 8 | [Deployment](docs/roadmaps/08-deployment.md) | مخطط | اكتمال V1 |
