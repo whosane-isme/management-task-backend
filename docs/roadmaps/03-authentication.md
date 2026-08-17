@@ -12,8 +12,9 @@ Google OIDC باستخدام Authorization Code Flow مع PKCE. Google يثبت 
 - [x] جلسة خادمية opaque؛ لا نخزن Google tokens ولا raw session token.
 - [x] Cookie HttpOnly للجلسة وdouble-submit CSRF للطلبات المغيرة.
 - [x] `/auth/me` وlogout مع إبطال سجل الجلسة.
-- [ ] Google OAuth Client credentials من صاحب المشروع.
-- [ ] تشغيل migration واختبار end-to-end على PostgreSQL.
+- [x] Google OAuth Client credentials مضبوطة محليًا من صاحب المشروع.
+- [x] تشغيل migrations على PostgreSQL حقيقي.
+- [ ] اختبار callback كامل بحساب Google بعد bootstrap لأول مدير.
 
 ## التدفق
 

@@ -11,6 +11,7 @@
 - [x] إسناد دور بنطاق المؤسسة أو قسم ومنع التكرار.
 - [x] دور Employee افتراضي لكل مستخدم جديد.
 - [x] حماية صلاحيات Organization Manager الحرجة.
+- [x] Bootstrap آمن لأول Organization Manager، idempotent ويرفض إنشاء مدير ثانٍ.
 - [ ] Routes؛ لن تُكشف قبل اكتمال authentication dependency.
 - [ ] Integration tests على PostgreSQL حقيقي.
 

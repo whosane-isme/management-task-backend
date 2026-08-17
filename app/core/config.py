@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     environment: Literal["development", "test", "staging", "production"] = "development"
     debug: bool = False
     api_v1_prefix: str = "/api/v1"
-    database_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/management_task"
+    database_url: str = "postgresql+psycopg://postgres:postgres@127.0.0.1:5432/management_task"
     database_echo: bool = False
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
     trusted_hosts: list[str] = Field(

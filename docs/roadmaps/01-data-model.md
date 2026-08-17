@@ -30,7 +30,8 @@
 - [x] تنفيذ SQLAlchemy models typed بأسلوب 2.0.
 - [x] كتابة أول migration يدوي المراجعة.
 - [x] إضافة قيود invariants، ومنها أن `DEPARTMENT` تتطلب `department_id`.
-- [ ] اختبار upgrade من DB فارغة وdowngrade ثم upgrade.
+- [x] اختبار upgrade من DB فارغة على PostgreSQL 17 حقيقي.
+- [ ] اختبار downgrade ثم upgrade كاختبار تكامل مؤتمت.
 - [x] إضافة diagram محدث بعد تثبيت المخطط.
 
 ## معيار الانتهاء

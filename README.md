@@ -14,16 +14,29 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -e ".[dev]"
 Copy-Item .env.example .env
-fastapi dev app/main.py
+docker compose up -d
+.\.venv\Scripts\alembic.exe upgrade head
+python -m app --reload
 ```
 
-على Linux/macOS استبدل التفعيل بـ`source .venv/bin/activate` والنسخ بـ`cp .env.example .env`.
+على Linux/macOS استبدل التفعيل بـ`source .venv/bin/activate` والنسخ بـ`cp .env.example .env`
+وشغّل Alembic عبر `.venv/bin/alembic upgrade head`. أمر `python -m app` يضمن استخدام event loop
+متوافق مع Psycopg على Windows أيضًا. يستخدم إعداد التطوير `127.0.0.1` لقاعدة البيانات عمدًا
+لتفادي تعارض حلّ `localhost` مع Psycopg async على Windows.
 
 بعد التشغيل:
 
 - API docs: `http://127.0.0.1:8000/docs`
 - Liveness: `http://127.0.0.1:8000/api/v1/health/live`
 - Readiness: `http://127.0.0.1:8000/api/v1/health/ready`
+
+قبل أول تسجيل دخول، أنشئ المدير مرة واحدة بالبريد نفسه المستخدم في حساب Google:
+
+```powershell
+python -m app.cli.bootstrap_manager --email manager@example.com --name "First Manager"
+```
+
+الأمر idempotent لنفس المدير، ويرفض إنشاء مدير ثانٍ؛ بعد ذلك تستخدم واجهة الأدوار المحمية.
 
 ## الفحوصات
 
@@ -52,3 +65,6 @@ APP_OAUTH_STATE_SECRET=replace-with-a-long-random-value
 ```
 
 لا ترسل الـclient secret في المحادثة ولا ترفعه إلى GitHub.
+
+قيم `POSTGRES_*` و`APP_DATABASE_URL` في `.env.example` مخصصة للتطوير المحلي فقط؛ استخدم
+أسرارًا مُدارة ومستخدم قاعدة محدود الصلاحيات في staging/production.
