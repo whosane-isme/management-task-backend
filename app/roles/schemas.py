@@ -29,6 +29,15 @@ class RoleCreate(BaseModel):
         return normalized
 
 
+class PermissionRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    code: str
+    description: str
+    created_at: datetime
+
+
 class RoleRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -41,6 +50,7 @@ class RoleRead(BaseModel):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+    permissions: list[PermissionRead]
 
 
 class RolePage(BaseModel):
@@ -52,12 +62,3 @@ class RolePage(BaseModel):
 
 class RolePermissionReplace(BaseModel):
     permission_ids: set[int] = Field(min_length=1)
-
-
-class PermissionRead(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
-    code: str
-    description: str
-    created_at: datetime

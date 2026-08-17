@@ -35,6 +35,11 @@ class UserRead(BaseModel):
     updated_at: datetime
 
 
+class CurrentUserRead(UserRead):
+    global_permissions: list[str]
+    department_permissions: dict[int, list[str]]
+
+
 class UserPage(BaseModel):
     items: list[UserRead]
     total: int

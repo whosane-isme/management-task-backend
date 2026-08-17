@@ -51,12 +51,38 @@ python -m app.cli.bootstrap_manager --email manager@example.com --name "First Ma
 كل عمليات الكتابة تتطلب Cookie جلسة صالحة و`X-CSRF-Token`. إسناد الأدوار يتطلب
 `users.manage` و`roles.manage` معًا.
 
+## Tasks API
+
+- `GET/POST /api/v1/tasks`
+- `GET/PATCH /api/v1/tasks/{id}`
+- `POST /api/v1/tasks/{id}/status`
+- `POST /api/v1/tasks/{id}/assignments`
+- `DELETE /api/v1/tasks/{id}/assignments/{user_id}`
+- `POST/DELETE /api/v1/tasks/{id}/help-request`
+- `POST /api/v1/tasks/{id}/help-request/accept`
+- `POST /api/v1/tasks/{id}/help-request/resolve`
+- `PUT /api/v1/task-preferences/{task_id}`
+
+القائمة الافتراضية تستخدم `view=focus`. القيم الأخرى هي `all`, `hidden`, و`pinned`، مع فلاتر
+للحالة والأولوية والرؤية والقسم والمنشئ والمكلّف والبحث. كل قراءة تمر أولًا عبر authorization
+predicate، لذلك لا يستطيع فلتر العرض توسيع صلاحية الوصول.
+
+حالات المهام هي `todo`, `in_progress`, `in_review`, `done`, و`cancelled`. لا يوجد حذف صلب
+للمهمة في V1 حفاظًا على ActivityLog.
+
 ## الفحوصات
 
 ```powershell
 ruff check .
 ruff format --check .
 pytest
+```
+
+اختبارات PostgreSQL التكاملية تعمل عند تعيين قاعدة اختبار مهاجرة ومنفصلة:
+
+```powershell
+$env:MANAGEMENT_TASK_TEST_DATABASE_URL="postgresql+psycopg://user:password@127.0.0.1:5432/management_task_test"
+pytest -m integration
 ```
 
 لا ترفع ملف `.env` أو أي OAuth secret إلى Git.

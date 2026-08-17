@@ -130,6 +130,12 @@ def test_department_create_and_assign_permissions_do_not_escape_scope() -> None:
     assert not can_assign_user(manager, target_user_id=11, target_department_id=3)
 
 
+def test_broad_assign_permission_allows_assigning_oneself() -> None:
+    manager = context(global_permissions=frozenset({PermissionCode.TASKS_ASSIGN_ANY}))
+
+    assert can_assign_user(manager, target_user_id=10, target_department_id=2)
+
+
 def test_executive_assistant_can_organize_another_users_view() -> None:
     assistant = context(
         global_permissions=frozenset({PermissionCode.TASK_PREFERENCES_MANAGE_OTHERS})
@@ -172,3 +178,20 @@ def test_view_all_compiles_to_unrestricted_authorized_predicate() -> None:
     compiled = str(statement.compile(dialect=postgresql.dialect()))
 
     assert "WHERE true" in compiled
+
+
+def test_department_scoped_view_all_is_included_in_list_predicate() -> None:
+    manager = context(
+        department_permissions={
+            2: frozenset({PermissionCode.TASKS_VIEW_ALL}),
+        }
+    )
+    statement = select(Task.id).where(visible_task_predicate(manager))
+    compiled = str(
+        statement.compile(
+            dialect=postgresql.dialect(),
+            compile_kwargs={"literal_binds": True},
+        )
+    )
+
+    assert "tasks.department_id IN (2)" in compiled

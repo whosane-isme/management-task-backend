@@ -31,6 +31,9 @@ include = ["app*"]
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]
+markers = [
+    "integration: requires a migrated PostgreSQL test database",
+]
 
 [tool.fastapi]
 entrypoint = "app.main:app"

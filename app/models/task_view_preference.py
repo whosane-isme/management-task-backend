@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sqlalchemy import BigInteger, Boolean, ForeignKey, false
+from sqlalchemy import BigInteger, Boolean, CheckConstraint, ForeignKey, false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base, TimestampMixin
@@ -14,6 +14,12 @@ if TYPE_CHECKING:
 
 class TaskViewPreference(TimestampMixin, Base):
     __tablename__ = "task_view_preferences"
+    __table_args__ = (
+        CheckConstraint(
+            "NOT (is_hidden AND is_pinned)",
+            name="ck_task_view_preferences_not_hidden_and_pinned",
+        ),
+    )
 
     viewer_id: Mapped[int] = mapped_column(
         BigInteger,

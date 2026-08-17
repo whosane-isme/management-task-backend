@@ -101,6 +101,26 @@ def test_admin_routes_require_authentication(client: TestClient) -> None:
     assert response.json() == {"detail": "Authentication required"}
 
 
+def test_me_exposes_effective_permission_codes(
+    app: FastAPI,
+    client: TestClient,
+) -> None:
+    install_dependencies(
+        app,
+        principal_with(PermissionCode.TASKS_CREATE_SELF, PermissionCode.USERS_MANAGE),
+        FakeSession(),
+    )
+
+    response = client.get("/api/v1/auth/me")
+
+    assert response.status_code == 200
+    assert response.json()["global_permissions"] == [
+        PermissionCode.TASKS_CREATE_SELF,
+        PermissionCode.USERS_MANAGE,
+    ]
+    assert response.json()["department_permissions"] == {}
+
+
 def test_user_list_requires_global_permission(app: FastAPI, client: TestClient) -> None:
     install_dependencies(app, principal_with(), FakeSession())
 

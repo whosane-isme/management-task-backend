@@ -63,7 +63,10 @@ def can_create_task(
     ):
         return True
     is_personal_task = not assignee_ids or assignee_ids == {context.user_id}
-    return is_personal_task and context.has_permission(PermissionCode.TASKS_CREATE_SELF)
+    return is_personal_task and context.has_permission(
+        PermissionCode.TASKS_CREATE_SELF,
+        department_id=department_id,
+    )
 
 
 def can_assign_user(
@@ -73,7 +76,14 @@ def can_assign_user(
     target_department_id: int | None,
 ) -> bool:
     if target_user_id == context.user_id:
-        return context.has_permission(PermissionCode.TASKS_CREATE_SELF)
+        return any(
+            context.has_permission(code, department_id=target_department_id)
+            for code in (
+                PermissionCode.TASKS_CREATE_SELF,
+                PermissionCode.TASKS_ASSIGN_DEPARTMENT,
+                PermissionCode.TASKS_ASSIGN_ANY,
+            )
+        )
     if context.has_permission(
         PermissionCode.TASKS_ASSIGN_ANY,
         department_id=target_department_id,
@@ -110,6 +120,10 @@ def visible_task_predicate(context: AuthorizationContext) -> ColumnElement[bool]
         Task.created_by_id == context.user_id,
         assignment_exists,
     ]
+
+    scoped_view_all_ids = context.departments_with(PermissionCode.TASKS_VIEW_ALL)
+    if scoped_view_all_ids:
+        clauses.append(Task.department_id.in_(scoped_view_all_ids))
 
     department_visibility_ids = set(context.departments_with(PermissionCode.TASKS_VIEW_DEPARTMENT))
     if context.primary_department_id is not None:

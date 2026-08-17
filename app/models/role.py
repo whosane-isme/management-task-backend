@@ -8,6 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base, BigIntIdMixin, TimestampMixin
 
 if TYPE_CHECKING:
+    from app.models.permission import Permission
     from app.models.role_permission import RolePermission
     from app.models.user_role_assignment import UserRoleAssignment
 
@@ -31,3 +32,7 @@ class Role(BigIntIdMixin, TimestampMixin, Base):
         back_populates="role",
         cascade="all, delete-orphan",
     )
+
+    @property
+    def permissions(self) -> list[Permission]:
+        return [link.permission for link in self.permission_links]

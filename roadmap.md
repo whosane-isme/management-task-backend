@@ -26,8 +26,8 @@
 | 1 | [Data Model](docs/roadmaps/01-data-model.md) | مكتمل ومتحقق على PostgreSQL 17 | Foundation |
 | 2 | [Users & Departments](docs/roadmaps/02-users-departments.md) | API الإدارة الأساسية منفذة ومتحققة | Data Model |
 | 3 | [Authentication](docs/roadmaps/03-authentication.md) | مكتمل ومتحقق end-to-end محليًا | Users |
-| 4 | [Tasks & Assignments](docs/roadmaps/04-tasks-assignments.md) | مخطط | Auth |
-| 5 | [Authorization](docs/roadmaps/05-authorization.md) | المحرك وAdmin API منفذان؛ Tasks قادمة | Tasks |
+| 4 | [Tasks & Assignments](docs/roadmaps/04-tasks-assignments.md) | مكتمل ومتحقق على PostgreSQL 17 | Auth |
+| 5 | [Authorization](docs/roadmaps/05-authorization.md) | مطبق على Admin API وكل عمليات المهام | Tasks |
 | 6 | [Comments & Activity](docs/roadmaps/06-comments-activity.md) | مخطط | Authorization |
 | 7 | [Security & Testing](docs/roadmaps/07-security-testing.md) | مستمر | كل مرحلة |
 | 8 | [Deployment](docs/roadmaps/08-deployment.md) | مخطط | اكتمال V1 |
@@ -60,20 +60,22 @@
 
 ### M3 — المهام والصلاحيات
 
-- [ ] CRUD للمهام والإسنادات مع pagination/filtering.
-- [ ] انتقالات حالة محددة وليست تحديثًا حرًا.
-- [ ] تطبيق `PUBLIC / DEPARTMENT / PRIVATE` على كل قراءة وكتابة.
-- [ ] منع IDOR حتى عند تخمين IDs.
+- [x] إنشاء وقراءة وتعديل المهام والإسنادات مع pagination/filtering؛ الإلغاء بدل الحذف الصلب لحماية سجل التدقيق.
+- [x] انتقالات حالة محددة وليست تحديثًا حرًا، وتشمل `IN_REVIEW` لمطابقة تدفق الواجهة.
+- [x] تطبيق `PUBLIC / DEPARTMENT / PRIVATE` على كل قراءة وكتابة.
+- [x] منع IDOR حتى عند تخمين IDs، مع إعادة `404` للمهمة غير المرئية.
+- [x] طلب المساعدة وقبوله وحله دون توسيع visibility المهمة.
+- [x] عروض `focus/all/hidden/pinned` وتفضيلات شخصية للعرض.
 
 ### M4 — التعاون والتدقيق
 
 - [ ] تعليقات مرتبطة بالمهمة.
 - [ ] Activity timeline غير قابل للتعديل عبر API عادي.
-- [ ] عمليات business + audit event ضمن transaction واحدة.
+- [x] عمليات المهام والإسناد والمساعدة والتفضيلات تسجل audit event ضمن transaction واحدة.
 
 ### M5 — جاهزية الإنتاج
 
-- [ ] اختبارات integration حقيقية على PostgreSQL.
+- [x] اختبارات integration حقيقية لمسارات المهام على PostgreSQL 17.
 - [ ] فحص dependencies وsecrets وpermissions.
 - [ ] HTTPS، migrations كخطوة نشر، backups، logging ومراقبة.
 - [ ] runbook للاستعادة والrollback.
@@ -91,6 +93,7 @@
 3. الأدوار والصلاحيات قابلة للتخصيص، وإسناد الدور يكون للمؤسسة كلها أو لقسم.
 4. الموظف يستطيع إنشاء مهمة لنفسه، ويحتاج صلاحية إضافية لإنشائها أو إسنادها للفريق.
 5. تفضيلات hidden/pinned تنظم العرض ولا تغير authorization.
+6. `IN_REVIEW` جزء من V1 لمطابقة لوحة العمل؛ `BLOCKED` ما زالت مؤجلة.
 
 ## بوابة قرار متبقية قبل Auth/Production
 

@@ -16,7 +16,7 @@ from app.auth.session_service import create_user_session, revoke_user_session
 from app.core.config import Settings
 from app.core.errors import AccessDeniedError
 from app.db.session import DatabaseSession
-from app.users.schemas import UserRead
+from app.users.schemas import CurrentUserRead, UserRead
 
 logger = logging.getLogger(__name__)
 
@@ -123,9 +123,21 @@ async def google_callback(request: Request, session: DatabaseSession) -> Respons
     return response
 
 
-@router.get("/me", response_model=UserRead)
+@router.get("/me", response_model=CurrentUserRead)
 async def get_me(principal: CurrentPrincipal) -> Any:
-    return principal.user
+    user_data = UserRead.model_validate(principal.user).model_dump()
+    return CurrentUserRead.model_validate(
+        {
+            **user_data,
+            "global_permissions": sorted(principal.authorization.global_permissions),
+            "department_permissions": {
+                department_id: sorted(permissions)
+                for department_id, permissions in sorted(
+                    principal.authorization.department_permissions.items()
+                )
+            },
+        }
+    )
 
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)

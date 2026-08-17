@@ -6,7 +6,13 @@ from fastapi.testclient import TestClient
 from pydantic import SecretStr
 
 from app.core.config import Settings
+from app.core.event_loop import compatible_event_loop_factory
 from app.main import create_app
+
+
+def pytest_asyncio_loop_factories(config: object, item: object) -> dict[str, object]:
+    del config, item
+    return {"database-compatible": compatible_event_loop_factory}
 
 
 @pytest.fixture

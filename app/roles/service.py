@@ -1,7 +1,8 @@
 from collections.abc import Collection
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.core.errors import InvalidOperationError, ResourceConflictError, ResourceNotFoundError
 from app.core.permission_codes import PermissionCode
@@ -13,8 +14,11 @@ from app.roles.schemas import RoleCreate
 SYSTEM_ROLE_REQUIRED_PERMISSIONS: dict[str, frozenset[str]] = {
     "organization-manager": frozenset(
         {
+            PermissionCode.TASKS_CREATE_ANY,
+            PermissionCode.TASKS_ASSIGN_ANY,
             PermissionCode.TASKS_VIEW_ALL,
             PermissionCode.TASKS_MANAGE_ALL,
+            PermissionCode.TASK_PREFERENCES_MANAGE_OTHERS,
             PermissionCode.USERS_MANAGE,
             PermissionCode.DEPARTMENTS_MANAGE,
             PermissionCode.ROLES_MANAGE,
@@ -59,7 +63,11 @@ async def replace_role_permissions(
     role_id: int,
     permission_ids: set[int],
 ) -> Role:
-    role = await session.get(Role, role_id)
+    role = await session.scalar(
+        select(Role)
+        .where(Role.id == role_id)
+        .options(selectinload(Role.permission_links).selectinload(RolePermission.permission))
+    )
     if role is None or not role.is_active:
         raise ResourceNotFoundError("Active role not found")
 
@@ -69,11 +77,7 @@ async def replace_role_permissions(
         raise ResourceNotFoundError("One or more permissions do not exist")
 
     validate_role_permission_codes(role.slug, {permission.code for permission in permissions})
-    await session.execute(delete(RolePermission).where(RolePermission.role_id == role.id))
-    session.add_all(
-        RolePermission(role_id=role.id, permission_id=permission_id)
-        for permission_id in permission_ids
-    )
+    role.permission_links = [RolePermission(permission=permission) for permission in permissions]
     await session.flush()
     return role
 
@@ -90,6 +94,7 @@ async def list_roles(
     result = await session.scalars(
         select(Role)
         .where(*filters)
+        .options(selectinload(Role.permission_links).selectinload(RolePermission.permission))
         .order_by(Role.display_order, func.lower(Role.name), Role.id)
         .limit(limit)
         .offset(offset)
