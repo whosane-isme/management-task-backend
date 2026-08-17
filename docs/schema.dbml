@@ -1,0 +1,188 @@
+// V1 is single-tenant. PostgreSQL migrations are the source of truth.
+
+Enum auth_provider {
+  google
+  github
+}
+
+Enum task_status {
+  todo
+  in_progress
+  done
+  cancelled
+}
+
+Enum task_priority {
+  low
+  medium
+  high
+  urgent
+}
+
+Enum task_visibility {
+  public
+  department
+  private
+}
+
+Enum help_request_status {
+  open
+  accepted
+  resolved
+  cancelled
+}
+
+Table departments {
+  id bigint [pk, increment]
+  name varchar(100) [not null, note: 'Unique case-insensitively in PostgreSQL']
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table users {
+  id bigint [pk, increment]
+  name varchar(160) [not null]
+  email varchar(320) [not null, note: 'Unique case-insensitively in PostgreSQL']
+  avatar_url text
+  is_active boolean [not null, default: true]
+  department_id bigint
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table permissions {
+  id bigint [pk, increment]
+  code varchar(100) [not null, unique]
+  description varchar(300) [not null]
+  created_at timestamptz [not null]
+}
+
+Table roles {
+  id bigint [pk, increment]
+  name varchar(120) [not null, note: 'Unique case-insensitively']
+  slug varchar(120) [not null, unique]
+  description text
+  display_order int [not null, note: 'Display only; does not grant access']
+  is_system boolean [not null, default: false]
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table role_permissions {
+  role_id bigint [pk]
+  permission_id bigint [pk]
+}
+
+Table user_role_assignments {
+  id bigint [pk, increment]
+  user_id bigint [not null]
+  role_id bigint [not null]
+  department_id bigint [note: 'Null means organization-wide scope']
+  assigned_by_id bigint
+  created_at timestamptz [not null]
+}
+
+Table auth_identities {
+  id bigint [pk, increment]
+  user_id bigint [not null]
+  provider auth_provider [not null]
+  subject varchar(255) [not null]
+  provider_email varchar(320) [not null]
+  created_at timestamptz [not null]
+
+  indexes {
+    (provider, subject) [unique]
+  }
+}
+
+Table tasks {
+  id bigint [pk, increment]
+  title varchar(200) [not null]
+  description text
+  status task_status [not null]
+  priority task_priority [not null]
+  visibility task_visibility [not null]
+  created_by_id bigint [not null]
+  department_id bigint
+  due_at timestamptz
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table task_assignments {
+  id bigint [pk, increment]
+  task_id bigint [not null]
+  user_id bigint [not null]
+  assigned_by_id bigint [not null]
+  created_at timestamptz [not null]
+
+  indexes {
+    (task_id, user_id) [unique]
+  }
+}
+
+Table task_view_preferences {
+  viewer_id bigint [pk]
+  task_id bigint [pk]
+  is_hidden boolean [not null, default: false]
+  is_pinned boolean [not null, default: false]
+  updated_by_id bigint [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table task_help_requests {
+  id bigint [pk, increment]
+  task_id bigint [not null]
+  requested_by_id bigint [not null]
+  message text
+  status help_request_status [not null]
+  accepted_by_id bigint
+  resolved_at timestamptz
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table task_comments {
+  id bigint [pk, increment]
+  task_id bigint [not null]
+  author_id bigint [not null]
+  content text [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table activity_logs {
+  id bigint [pk, increment]
+  task_id bigint [not null]
+  actor_id bigint
+  event_type varchar(100) [not null]
+  details jsonb [not null]
+  created_at timestamptz [not null]
+}
+
+Ref: users.department_id > departments.id
+Ref: auth_identities.user_id > users.id
+Ref: role_permissions.role_id > roles.id
+Ref: role_permissions.permission_id > permissions.id
+Ref: user_role_assignments.user_id > users.id
+Ref: user_role_assignments.role_id > roles.id
+Ref: user_role_assignments.department_id > departments.id
+Ref: user_role_assignments.assigned_by_id > users.id
+Ref: tasks.created_by_id > users.id
+Ref: tasks.department_id > departments.id
+Ref: task_assignments.task_id > tasks.id
+Ref: task_assignments.user_id > users.id
+Ref: task_assignments.assigned_by_id > users.id
+Ref: task_view_preferences.viewer_id > users.id
+Ref: task_view_preferences.task_id > tasks.id
+Ref: task_view_preferences.updated_by_id > users.id
+Ref: task_help_requests.task_id > tasks.id
+Ref: task_help_requests.requested_by_id > users.id
+Ref: task_help_requests.accepted_by_id > users.id
+Ref: task_comments.task_id > tasks.id
+Ref: task_comments.author_id > users.id
+Ref: activity_logs.task_id > tasks.id
+Ref: activity_logs.actor_id > users.id
