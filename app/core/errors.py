@@ -14,3 +14,11 @@ class ResourceConflictError(DomainError):
 
 class InvalidOperationError(DomainError):
     code = "invalid_operation"
+
+
+class AuthenticationError(DomainError):
+    code = "unauthenticated"
+
+
+class AccessDeniedError(DomainError):
+    code = "forbidden"

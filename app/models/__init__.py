@@ -11,6 +11,7 @@ from app.models.task_help_request import TaskHelpRequest
 from app.models.task_view_preference import TaskViewPreference
 from app.models.user import User
 from app.models.user_role_assignment import UserRoleAssignment
+from app.models.user_session import UserSession
 
 __all__ = [
     "ActivityLog",
@@ -26,4 +27,5 @@ __all__ = [
     "TaskViewPreference",
     "User",
     "UserRoleAssignment",
+    "UserSession",
 ]

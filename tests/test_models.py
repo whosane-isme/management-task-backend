@@ -18,6 +18,7 @@ def test_expected_tables_are_registered() -> None:
         "task_view_preferences",
         "tasks",
         "user_role_assignments",
+        "user_sessions",
         "users",
     }
 

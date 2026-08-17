@@ -1,3 +1,5 @@
+import secrets
+
 import pytest
 from pydantic import ValidationError
 
@@ -42,6 +44,16 @@ def test_safe_production_settings_are_accepted() -> None:
         database_url="postgresql+psycopg://app:secret@db.example/test",
         trusted_hosts=["api.example.com"],
         cors_origins=["https://app.example.com"],
+        oauth_state_secret=secrets.token_urlsafe(32),
+        oauth_state_cookie_name="__Host-mt_oauth",
+        auth_cookie_name="__Host-mt_session",
+        csrf_cookie_name="__Host-mt_csrf",
+        cookie_secure=True,
     )
 
     assert settings.environment == "production"
+
+
+def test_google_client_id_and_secret_must_be_configured_together() -> None:
+    with pytest.raises(ValidationError, match="configured together"):
+        Settings(google_client_id="client-id", google_client_secret=None)

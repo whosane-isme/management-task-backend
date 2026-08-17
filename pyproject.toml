@@ -10,7 +10,9 @@ readme = "README.md"
 requires-python = ">=3.12,<3.15"
 dependencies = [
     "alembic>=1.18,<2",
+    "authlib>=1.7,<2",
     "fastapi[standard-no-fastapi-cloud-cli]>=0.136,<0.137",
+    "itsdangerous>=2.2,<3",
     "psycopg[binary]>=3.2,<4",
     "pydantic-settings>=2.10,<3",
     "sqlalchemy[asyncio]>=2.0.51,<2.1",

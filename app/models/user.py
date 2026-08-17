@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from app.models.department import Department
     from app.models.task import Task
     from app.models.user_role_assignment import UserRoleAssignment
+    from app.models.user_session import UserSession
 
 
 class User(BigIntIdMixin, TimestampMixin, Base):
@@ -42,5 +43,9 @@ class User(BigIntIdMixin, TimestampMixin, Base):
     role_assignments: Mapped[list[UserRoleAssignment]] = relationship(
         back_populates="user",
         foreign_keys="UserRoleAssignment.user_id",
+        cascade="all, delete-orphan",
+    )
+    sessions: Mapped[list[UserSession]] = relationship(
+        back_populates="user",
         cascade="all, delete-orphan",
     )

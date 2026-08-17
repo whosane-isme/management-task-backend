@@ -25,7 +25,7 @@
 | 0 | [Foundation](docs/roadmaps/00-foundation.md) | مكتمل | — |
 | 1 | [Data Model](docs/roadmaps/01-data-model.md) | منفذ؛ تحقق PostgreSQL معلّق | Foundation |
 | 2 | [Users & Departments](docs/roadmaps/02-users-departments.md) | Services منفذة؛ API ينتظر Auth | Data Model |
-| 3 | [Authentication](docs/roadmaps/03-authentication.md) | مخطط | Users |
+| 3 | [Authentication](docs/roadmaps/03-authentication.md) | الكود منفذ؛ إعداد Google/DB معلّق | Users |
 | 4 | [Tasks & Assignments](docs/roadmaps/04-tasks-assignments.md) | مخطط | Auth |
 | 5 | [Authorization](docs/roadmaps/05-authorization.md) | المحرك الأساسي منفذ | Tasks |
 | 6 | [Comments & Activity](docs/roadmaps/06-comments-activity.md) | مخطط | Authorization |
@@ -51,9 +51,10 @@
 ### M2 — الهوية والإدارة
 
 - [ ] إنشاء الأقسام والمستخدمين وإيقافهم بواسطة manager فقط.
-- [ ] Google Authorization Code Flow مع PKCE و`state` و`nonce`.
-- [ ] ربط المستخدم المدعو بهوية Google ذات بريد موثّق.
-- [ ] جلسات قابلة للإبطال وتسجيل خروج فعلي.
+- [x] Google Authorization Code Flow مع PKCE و`state` و`nonce` في الكود.
+- [x] ربط المستخدم المدعو بهوية Google ذات بريد موثّق في الكود.
+- [x] جلسات قابلة للإبطال وتسجيل خروج فعلي في الكود.
+- [ ] اختبار end-to-end مع Google credentials وPostgreSQL حقيقيين.
 
 ### M3 — المهام والصلاحيات
 

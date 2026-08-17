@@ -34,3 +34,21 @@ pytest
 ```
 
 لا ترفع ملف `.env` أو أي OAuth secret إلى Git.
+
+## إعداد Google Login
+
+التطبيق يعمل دون Google credentials، لكن `/api/v1/auth/google/login` سيعيد `503` حتى إعدادها.
+
+1. أنشئ OAuth Client من نوع **Web application** في Google Cloud Console.
+2. أضف redirect URI للتطوير حرفيًا:
+   `http://localhost:8000/api/v1/auth/google/callback`
+3. ضع القيم في `.env` فقط:
+
+```dotenv
+APP_GOOGLE_CLIENT_ID=...
+APP_GOOGLE_CLIENT_SECRET=...
+APP_GOOGLE_REDIRECT_URI=http://localhost:8000/api/v1/auth/google/callback
+APP_OAUTH_STATE_SECRET=replace-with-a-long-random-value
+```
+
+لا ترسل الـclient secret في المحادثة ولا ترفعه إلى GitHub.
