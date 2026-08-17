@@ -6,9 +6,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from app.api.errors import handle_domain_error
 from app.api.router import api_router
 from app.auth.oauth import create_oauth_registry
 from app.core.config import Settings, get_settings
+from app.core.errors import DomainError
 from app.core.logging import configure_logging
 from app.db.session import create_database
 
@@ -52,6 +54,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
             allow_headers=["Accept", "Authorization", "Content-Type", "X-CSRF-Token"],
         )
+    application.add_exception_handler(DomainError, handle_domain_error)
     application.include_router(api_router, prefix=settings.api_v1_prefix)
     return application
 

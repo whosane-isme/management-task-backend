@@ -23,3 +23,10 @@ class DepartmentRead(BaseModel):
     is_active: bool
     created_at: datetime
     updated_at: datetime
+
+
+class DepartmentPage(BaseModel):
+    items: list[DepartmentRead]
+    total: int
+    limit: int
+    offset: int

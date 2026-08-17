@@ -12,8 +12,9 @@
 - [x] دور Employee افتراضي لكل مستخدم جديد.
 - [x] حماية صلاحيات Organization Manager الحرجة.
 - [x] Bootstrap آمن لأول Organization Manager، idempotent ويرفض إنشاء مدير ثانٍ.
-- [ ] Routes؛ لن تُكشف قبل اكتمال authentication dependency.
-- [ ] Integration tests على PostgreSQL حقيقي.
+- [x] Routes أساسية محمية للمستخدمين والأقسام والأدوار مع pagination وCSRF.
+- [x] Integration read tests على PostgreSQL حقيقي بحساب Organization Manager.
+- [ ] PATCH للتعديل وقوائم role assignments وحذف الإسناد.
 
 ## API مقترح
 
@@ -41,3 +42,4 @@
 - تكرار البريد/اسم القسم يفشل بتعارض مفهوم.
 - الموظف لا ينشئ مستخدمًا ولا يرفع دوره.
 - المستخدم المعطل لا يستطيع إنشاء جلسة جديدة.
+- إسناد الأدوار يتطلب `users.manage` و`roles.manage` معًا لمنع رفع الصلاحيات.

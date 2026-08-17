@@ -1,4 +1,5 @@
 import hmac
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import timedelta
 from typing import Annotated
@@ -77,3 +78,26 @@ def require_csrf(request: Request, principal: CurrentPrincipal) -> Principal:
 
 
 CsrfProtectedPrincipal = Annotated[Principal, Depends(require_csrf)]
+
+
+def _verify_permissions(principal: Principal, required_codes: tuple[str, ...]) -> Principal:
+    if not all(principal.authorization.has_permission(code) for code in required_codes):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient permissions",
+        )
+    return principal
+
+
+def require_permissions(*required_codes: str) -> Callable[[Principal], Principal]:
+    def dependency(principal: CurrentPrincipal) -> Principal:
+        return _verify_permissions(principal, required_codes)
+
+    return dependency
+
+
+def require_csrf_permissions(*required_codes: str) -> Callable[[Principal], Principal]:
+    def dependency(principal: CsrfProtectedPrincipal) -> Principal:
+        return _verify_permissions(principal, required_codes)
+
+    return dependency

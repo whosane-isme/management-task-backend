@@ -76,3 +76,27 @@ async def replace_role_permissions(
     )
     await session.flush()
     return role
+
+
+async def list_roles(
+    session: AsyncSession,
+    *,
+    limit: int,
+    offset: int,
+    include_inactive: bool = False,
+) -> tuple[list[Role], int]:
+    filters = () if include_inactive else (Role.is_active.is_(True),)
+    total = await session.scalar(select(func.count()).select_from(Role).where(*filters))
+    result = await session.scalars(
+        select(Role)
+        .where(*filters)
+        .order_by(Role.display_order, func.lower(Role.name), Role.id)
+        .limit(limit)
+        .offset(offset)
+    )
+    return list(result), total or 0
+
+
+async def list_permissions(session: AsyncSession) -> list[Permission]:
+    result = await session.scalars(select(Permission).order_by(Permission.code))
+    return list(result)

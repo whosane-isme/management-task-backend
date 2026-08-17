@@ -43,5 +43,21 @@ class RoleRead(BaseModel):
     updated_at: datetime
 
 
+class RolePage(BaseModel):
+    items: list[RoleRead]
+    total: int
+    limit: int
+    offset: int
+
+
 class RolePermissionReplace(BaseModel):
     permission_ids: set[int] = Field(min_length=1)
+
+
+class PermissionRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    code: str
+    description: str
+    created_at: datetime

@@ -1,7 +1,7 @@
 from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.errors import ResourceConflictError, ResourceNotFoundError
+from app.core.errors import InvalidOperationError, ResourceConflictError, ResourceNotFoundError
 from app.departments.service import get_active_department
 from app.models.role import Role
 from app.models.user import User
@@ -104,3 +104,33 @@ async def deactivate_user(session: AsyncSession, user_id: int) -> User:
     user.is_active = False
     await session.flush()
     return user
+
+
+async def deactivate_user_as_actor(
+    session: AsyncSession,
+    user_id: int,
+    *,
+    actor_user_id: int,
+) -> User:
+    if user_id == actor_user_id:
+        raise InvalidOperationError("You cannot deactivate your own account")
+    return await deactivate_user(session, user_id)
+
+
+async def list_users(
+    session: AsyncSession,
+    *,
+    limit: int,
+    offset: int,
+    include_inactive: bool = False,
+) -> tuple[list[User], int]:
+    filters = () if include_inactive else (User.is_active.is_(True),)
+    total = await session.scalar(select(func.count()).select_from(User).where(*filters))
+    result = await session.scalars(
+        select(User)
+        .where(*filters)
+        .order_by(func.lower(User.name), User.id)
+        .limit(limit)
+        .offset(offset)
+    )
+    return list(result), total or 0

@@ -28,9 +28,10 @@
 
 - [x] policy functions مركزية يعاد استخدامها في list/detail/write.
 - [x] تطبيق filter على query نفسها، وليس جلب السجل ثم إخفاء الاستجابة فقط.
-- عدم تسريب وجود سجل سري؛ استخدم 404 عندما يلزم.
-- منع mass assignment: schemas منفصلة للإنشاء والتعديل والاستجابة.
+- [x] عدم تسريب وجود سجل سري؛ استخدم 404 عندما يلزم.
+- [x] منع mass assignment: schemas منفصلة للإنشاء والتعديل والاستجابة.
 - [x] اختبارات policy matrix لكل visibility والنطاقات الأساسية.
 - [x] deny by default، وجمع permissions من كل role assignment صالح ضمن نطاق المورد.
 - [x] تفضيلات الإخفاء لا تدخل دالة authorization ولا يمكن استعمالها للوصول إلى مهمة.
-- [ ] اختبارات permission matrix على كل endpoint بعد إضافة routes.
+- [x] permission/CSRF matrix لمسارات الإدارة الأساسية.
+- [ ] permission matrix لمسارات المهام عند إضافتها.

@@ -38,6 +38,19 @@ python -m app.cli.bootstrap_manager --email manager@example.com --name "First Ma
 
 الأمر idempotent لنفس المدير، ويرفض إنشاء مدير ثانٍ؛ بعد ذلك تستخدم واجهة الأدوار المحمية.
 
+## Admin API الأساسية
+
+- `GET/POST /api/v1/departments`
+- `GET/POST /api/v1/users`
+- `POST /api/v1/users/{id}/deactivate`
+- `POST /api/v1/users/{id}/role-assignments`
+- `GET/POST /api/v1/roles`
+- `GET /api/v1/roles/permissions`
+- `PUT /api/v1/roles/{id}/permissions`
+
+كل عمليات الكتابة تتطلب Cookie جلسة صالحة و`X-CSRF-Token`. إسناد الأدوار يتطلب
+`users.manage` و`roles.manage` معًا.
+
 ## الفحوصات
 
 ```powershell

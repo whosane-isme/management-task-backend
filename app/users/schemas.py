@@ -35,6 +35,24 @@ class UserRead(BaseModel):
     updated_at: datetime
 
 
+class UserPage(BaseModel):
+    items: list[UserRead]
+    total: int
+    limit: int
+    offset: int
+
+
 class RoleAssignmentCreate(BaseModel):
     role_id: int = Field(ge=1)
     department_id: int | None = Field(default=None, ge=1)
+
+
+class RoleAssignmentRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    user_id: int
+    role_id: int
+    department_id: int | None
+    assigned_by_id: int | None
+    created_at: datetime

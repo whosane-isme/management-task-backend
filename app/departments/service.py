@@ -24,3 +24,22 @@ async def get_active_department(session: AsyncSession, department_id: int) -> De
     if department is None or not department.is_active:
         raise ResourceNotFoundError("Active department not found")
     return department
+
+
+async def list_departments(
+    session: AsyncSession,
+    *,
+    limit: int,
+    offset: int,
+    include_inactive: bool = False,
+) -> tuple[list[Department], int]:
+    filters = () if include_inactive else (Department.is_active.is_(True),)
+    total = await session.scalar(select(func.count()).select_from(Department).where(*filters))
+    result = await session.scalars(
+        select(Department)
+        .where(*filters)
+        .order_by(func.lower(Department.name), Department.id)
+        .limit(limit)
+        .offset(offset)
+    )
+    return list(result), total or 0
